@@ -10,7 +10,7 @@ export interface MenuProps {
     className?: string;
     mode?: Menumode;
     style?: React.CSSProperties;
-    onSelect?:SelectCallback
+    onSelect?:SelectCallback;
     children?: React.ReactNode;
     defaultOpenSubMenus?: string[]; /**设置子菜单的默认打开 只在纵向模式下生效 */
 }

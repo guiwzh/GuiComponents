@@ -10,7 +10,7 @@ function App() {
       <header className="App-header">
         <Button btnType='primary'>Heello</Button>
 
-        <Menu defaultIndex='0' onSelect={index => console.log(index)}>
+        <Menu defaultIndex='0' onSelect={(e,index) => console.log(e,index)}>
           <MenuItem>link1</MenuItem>
           <MenuItem>link2</MenuItem>
           <SubMenu title='子菜单'>

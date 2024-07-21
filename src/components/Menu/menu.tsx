@@ -4,7 +4,7 @@ import { MenuItemProps } from "./menuItem";
 
 
 type Menumode = "horizontal" | "vertical";
-type SelectCallback=(selectedIndex: string) => void;
+type SelectCallback=(Index: string,e:React.MouseEvent) => void;
 export interface MenuProps {
     defaultIndex?: string; /**默认 active 的菜单项的索引值 */
     className?: string;
@@ -27,10 +27,10 @@ export const Menu: React.FC<MenuProps> = (props) => {
     const { className, mode="horizontal" ,style, children,defaultIndex="0",onSelect,defaultOpenSubMenus=[] } = props;
     const [currentActive, setActive]=useState(defaultIndex);
 
-    const handleClick = (index: string) =>{
+    const handleClick = (index: string,e:React.MouseEvent,) =>{
         setActive(index)
         if(onSelect){
-            onSelect(index)
+            onSelect(index,e)
         }
     }
     const passedContext: ImenuContext = {   

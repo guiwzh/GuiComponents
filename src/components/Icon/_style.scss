@@ -1,0 +1,5 @@
+@each $key, $val in $theme-colors {//通过each遍历 theme-colors的键值对，循环创建多个类的CSS样式
+  .icon-#{$key} {
+    color: $val;
+  }
+}

@@ -2,7 +2,7 @@ import React,{ FC, useContext, useState, FunctionComponentElement, ReactNode } f
 import classNames from 'classnames'
 import { MenuContext } from './menu'
 import { MenuItemProps } from './menuItem'
-// import Icon from '../Icon/icon'
+import Icon from '../Icon/icon';
 // import Transition from '../Transition/transition'
 export interface SubMenuProps {
   index?: string;
@@ -16,14 +16,15 @@ export interface SubMenuProps {
 export const SubMenu: FC<SubMenuProps> = ({ index, title, children, className}) => {
   const context = useContext(MenuContext)
   const openedSubMenus = context.defaultOpenSubMenus as Array<string>
-
+  
   const isOpend = (index && context.mode === 'vertical') ? openedSubMenus.includes(index) : false
-  const [ menuOpen, setOpen ] = useState(isOpend) //控制下下拉菜单的展开
+  const [ menuOpen, setOpen ] = useState(isOpend) //控制下拉菜单的展开
   const classes = classNames('menu-item submenu-item', className, {
     'is-active': context.index === index,
     'is-opened': menuOpen,
     'is-vertical': context.mode === 'vertical'
   })
+  console.log(classes)
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault()
     setOpen(!menuOpen)
@@ -43,11 +44,11 @@ export const SubMenu: FC<SubMenuProps> = ({ index, title, children, className}) 
     onMouseEnter: (e: React.MouseEvent) => { handleMouse(e, true)},
     onMouseLeave: (e: React.MouseEvent) => { handleMouse(e, false)}
   } : {}//仅有水平模式才支持鼠标移入移出展开
-  const renderChildren = () => {
-    const subMenuClasses = classNames('viking-submenu', {
-      'menu-opened': menuOpen
+  const subMenuClasses = classNames('viking-submenu', {
+    'menu-opened': menuOpen
     })
-    console.log(children)
+  const renderChildren = () => {
+   
     const childrenComponent = React.Children.map(children, (child, i) => {
       const childElement = child as FunctionComponentElement<MenuItemProps>
       if (childElement.type.displayName === 'MenuItem' || childElement.type.displayName === 'SubMenu') {
@@ -74,9 +75,9 @@ export const SubMenu: FC<SubMenuProps> = ({ index, title, children, className}) 
   }
   return (
     <li key={index} className={classes} {...hoverEvents}>
-      <div className="submenu-title" {...clickEvents}>
+      <div className="submenu-title" {...clickEvents} >
         {title}
-        {/* <Icon icon="angle-down" className="arrow-icon"/> */}
+        <Icon icon="angle-down" className="arrow-icon"/>
       </div>
       {renderChildren()}
     </li>

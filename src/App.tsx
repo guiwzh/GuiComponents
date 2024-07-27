@@ -7,6 +7,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import Icon from './components/Icon/icon';
 import Input from './components/Input/input';
+import AutoComplete from './components/AutoComplete/Autocomplete';
 library.add(fas)
 
 
@@ -30,6 +31,10 @@ function App() {
           </SubMenu>
         </Menu>
         <Input  defaultValue={['asd','sadsd']}></Input>
+        <AutoComplete fetchSuggestions={(serach) => {
+
+          return ['asd','sadsd','asdd','asdd'].filter(item => item.includes(serach))
+        }}></AutoComplete>
       </header>
     </div>
   );

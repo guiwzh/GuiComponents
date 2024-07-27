@@ -1,21 +1,25 @@
 import React, {FC,useState,ChangeEvent ,ReactElement} from 'react'
 import Input,{InputProps} from '../Input/input'
 
+interface DataSourceObject {
+    value: string;
+  }
+export type DataSourceType<T = {}> = T & DataSourceObject
 
 export interface AutoCompletProps extends Omit<InputProps,'onSelect'> {
-    fetchSuggestions: (string: string) => string[];
-    onSelect?: (item: string) => void;
-    renderOption?: (item: string) => ReactElement;
+    fetchSuggestions: (string: string) => DataSourceType[];
+    onSelect?: (item: DataSourceType) => void;
+    renderOption?: (item: DataSourceType) => ReactElement;
 }
 
 export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const {value,fetchSuggestions,onSelect,renderOption,...restprops} = props;
 
     const [inputValue,setInputValue] = useState(value);
-    const [suggestions,setSuggestions] = useState<string[]>([]);
+    const [suggestions,setSuggestions] = useState<DataSourceType[]>([]);
 
-    const handleSelect = (item:string) => {
-        setInputValue(item);
+    const handleSelect = (item:DataSourceType) => {
+        setInputValue(item.value);
         setSuggestions([]);
         if (onSelect){
             onSelect(item);
@@ -25,7 +29,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
         return (
             <ul>
                 {suggestions.map((item,index)=>(
-                    <li key={index} onClick={()=>handleSelect(item)}>{renderOption ? renderOption(item) : item}
+                    <li key={index} onClick={()=>handleSelect(item)}>{renderOption ? renderOption(item) : item.value}
                     </li>
                 ))}
             </ul>
@@ -44,7 +48,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     };
 
     return (
-        <div>
+        <div className='viking-auto-complete'>
             <Input {...restprops} value={inputValue} onChange={handleChange}/>
             {suggestions.length>0 && generateDropdown()}
         </div>

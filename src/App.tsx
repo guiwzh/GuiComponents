@@ -6,6 +6,7 @@ import SubMenu from './components/Menu/subMenu';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import Icon from './components/Icon/icon';
+import Input from './components/Input/input';
 library.add(fas)
 
 
@@ -28,6 +29,7 @@ function App() {
           <MenuItem>link5</MenuItem>
           </SubMenu>
         </Menu>
+        <Input  defaultValue={['asd','sadsd']}></Input>
       </header>
     </div>
   );

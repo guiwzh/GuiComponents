@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { MenuContext } from './menu'
 import { MenuItemProps } from './menuItem'
 import Icon from '../Icon/icon';
-// import Transition from '../Transition/transition'
+import Transition from '../Transition/transition';
 export interface SubMenuProps {
   index?: string;
   /**下拉菜单选项的文字 */
@@ -44,9 +44,7 @@ export const SubMenu: FC<SubMenuProps> = ({ index, title, children, className}) 
     onMouseEnter: (e: React.MouseEvent) => { handleMouse(e, true)},
     onMouseLeave: (e: React.MouseEvent) => { handleMouse(e, false)}
   } : {}//仅有水平模式才支持鼠标移入移出展开
-  const subMenuClasses = classNames('viking-submenu', {
-    'menu-opened': menuOpen
-    })
+  
   const renderChildren = () => {
    
     const childrenComponent = React.Children.map(children, (child, i) => {
@@ -60,17 +58,15 @@ export const SubMenu: FC<SubMenuProps> = ({ index, title, children, className}) 
       }
     })
     return (
-
-      <ul className={subMenuClasses}>
-      {childrenComponent}
-      </ul>
-      // <Transition
-      //   in={menuOpen}
-      //   timeout={300}
-      //   animation="zoom-in-top"
-      // >
-      
-      // </Transition>
+      <Transition
+        in={menuOpen}
+        timeout={300}
+        animation="zoom-in-top"
+      >
+        <ul className='viking-submenu'>
+          {childrenComponent}
+        </ul>
+      </Transition>
     )
   }
   return (

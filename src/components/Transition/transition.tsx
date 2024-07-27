@@ -6,7 +6,7 @@ type AnimationName = 'zoom-in-top' | 'zoom-in-left' | 'zoom-in-bottom' | 'zoom-i
 
 type TransitionProps = CSSTransitionProps & {
   animation?: AnimationName,
-  wrapper?: boolean,
+  wrapper?: boolean,//通过wrapper添加一层div标签，解决重复设置transform，导致动画效果消失的问题
   children?: ReactNode
 }
 
@@ -16,7 +16,7 @@ const Transition: React.FC<TransitionProps> = (props) => {
     classNames,
     animation,
     wrapper,
-    unmountOnExit=true,
+    unmountOnExit=true,//该属性可以根据in属性的true和false实现子节点的挂载与卸载，从而无需自行添加display:none与block的转换
     appear=true,
     ...restProps
   } = props
@@ -30,10 +30,6 @@ const Transition: React.FC<TransitionProps> = (props) => {
       {wrapper ? <div>{children}</div> : children}
     </CSSTransition>
   )
-}
-Transition.defaultProps = {
-  unmountOnExit: true,
-  appear: true,
 }
 
 export default Transition

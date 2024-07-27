@@ -17,6 +17,13 @@ function App() {
       </>
     )
   }
+  const handleFetch = (str:string) => {
+    return fetch(`https://api.github.com/search/users?q=${str}`)
+      .then(res => res.json())
+      .then(res => {
+        return res.items.map((item: { login: any; })=> ({ value: item.login }))
+      })
+  }
   return (
     <div className="App">
       <Icon icon="arrow-down" theme='danger' size='lg'></Icon>
@@ -36,10 +43,7 @@ function App() {
           </SubMenu>
         </Menu>
         <Input  defaultValue={['asd','sadsd']}></Input>
-        <AutoComplete fetchSuggestions={(serach) => {
-
-          return [{value:'asd',label:'asd'},{value:'sadsd',label:'sadsd'},{value:'asdd',label:'asdd'},{value:'asdd',label:'asdd'}].filter(item => item.value.includes(serach))
-        }}
+        <AutoComplete fetchSuggestions={handleFetch}
         renderOption={renderOption}
         ></AutoComplete>
       </header>

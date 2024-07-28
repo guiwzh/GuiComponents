@@ -14,10 +14,11 @@ export interface AutoCompletProps extends Omit<InputProps,'onSelect'> {
     onSelect?: (item: DataSourceType) => void;
     renderOption?: (item: DataSourceType) => ReactElement;
     debounceTime?: number;
+    expireTime?: number;
 }
 
 export const AutoComplete: FC<AutoCompletProps> = (props) => {
-    const {value,fetchSuggestions,onSelect,renderOption,style,debounceTime=300,...restprops} = props;
+    const {value,fetchSuggestions,onSelect,renderOption,style,debounceTime=300,expireTime=3600000,...restprops} = props;
 
     const [inputValue,setInputValue] = useState(value as string);
     const [suggestions,setSuggestions] = useState<DataSourceType[]>([]);
@@ -32,9 +33,9 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const debouncedValue = useDebounce(inputValue,debounceTime);//使用该hooks，将inputValue的值进行防抖处理
     useClickOutside(componentRef,()=>{setisFocus(false)});//使用该hooks，使得点击组件外部时，将suggestions清空
     useEffect(()=>{
-        async function fetchData(){
-           
-            if (triggerSearch.current){
+        function getData(){
+            
+            async function fetchData(){
                 fetchId.current++;
                 if(debouncedValue){
                     const Id=fetchId.current;
@@ -46,22 +47,43 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
                         if( Id === fetchId.current && results){
                             setloading(false)
                             setSuggestions(results)
+                            const item = {
+                                value: results,  // 实际数据
+                                expiry: new Date().getTime() + expireTime, // 当前时间加上1小时的过期时间 (单位毫秒)
+                            };
+                            localStorage.setItem(debouncedValue, JSON.stringify(item))
                         }
                     }catch (e){
                         alert(e)
                         setloading(false)
                         setSuggestions([])
-                       
+                    
                     }
                 }else{
                     setloading(false)
                     setSuggestions([])
-                    
                 }
             }
+            if (triggerSearch.current){
+                
+                if(localStorage.getItem(debouncedValue)){
+                    const item = JSON.parse(localStorage.getItem(debouncedValue) as string);
+                    if(item.expiry > new Date().getTime()){
+                        fetchId.current++;
+                        setloading(false)
+                        setSuggestions(item.value)
+                    }else{
+                        localStorage.removeItem(debouncedValue)
+                        fetchData()
+                    }
+                }else{
+                    fetchData()
+                }
+                sethighlightIndex(-1)
+            }
         }
-        fetchData()
-        sethighlightIndex(-1)
+        getData()
+        
     },[debouncedValue])
 
     const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
@@ -78,6 +100,10 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
         }
         triggerSearch.current=false
     }
+    // const handleUpDown = (item:DataSourceObject) => {
+    //     setInputValue(item.value);
+    //     triggerSearch.current=false
+    // }
     const highlight = (index:number) => {
         if(index<0) index=0
         if(index>suggestions.length-1) index=suggestions.length-1
@@ -92,18 +118,20 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
                 break
             case 'ArrowDown':
                 highlight(highlightIndex+1)
+                // if (suggestions[highlightIndex+1]) handleUpDown(suggestions[highlightIndex+1])
                 break
             case 'ArrowUp':
                 highlight(highlightIndex-1)
+                // if (suggestions[highlightIndex-1]) handleUpDown(suggestions[highlightIndex-1])
                 break
             case 'Escape':
-                setSuggestions([])
+                setisFocus(false)
                 break
             default:
                 break
          }
     }
-    const handleFocus = (e:any) => {
+    const handleClick = (e:any) => {
         setisFocus(true)
     }
     const generateDropdown = () => {
@@ -133,7 +161,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
                 onChange={handleChange}
                 {...restprops}
                 onKeyDown={handleKeyDown} 
-                onFocus={handleFocus}
+                onClick={handleClick}
             />
             {isFocus && loading && <ul><Icon icon="spinner" spin></Icon>loading...</ul>}
             {isFocus && suggestions.length>0 && generateDropdown()}

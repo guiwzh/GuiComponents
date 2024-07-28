@@ -26,10 +26,10 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const [highlightIndex,sethighlightIndex]= useState(-1);
     const [isFocus,setisFocus] = useState(true);
 
-
     const componentRef = useRef<HTMLDivElement>(null);
     const triggerSearch = useRef(false);//解决select后，再次触发fetchsuggestion的问题
     const fetchId = useRef(0);//解决竞态问题
+    const intialInputvalue = useRef(value as string);//记录当前输入框不是通过Arraydown与Arrayup方法改变时的原始值
     const debouncedValue = useDebounce(inputValue,debounceTime);//使用该hooks，将inputValue的值进行防抖处理
     useClickOutside(componentRef,()=>{setisFocus(false)});//使用该hooks，使得点击组件外部时，将suggestions清空
     useEffect(()=>{
@@ -57,7 +57,6 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
                         alert(e)
                         setloading(false)
                         setSuggestions([])
-                    
                     }
                 }else{
                     setloading(false)
@@ -89,25 +88,47 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
         const value= e.target.value.trim();
         setInputValue(value)
+        intialInputvalue.current=value
         triggerSearch.current=true
     };
 
     const handleSelect = (item:DataSourceType) => {
-        setInputValue(item.value);
+        setInputValue(item.value)
+        intialInputvalue.current=item.value
         setSuggestions([]);
         if (onSelect){
             onSelect(item);
         }
         triggerSearch.current=false
     }
-    // const handleUpDown = (item:DataSourceObject) => {
-    //     setInputValue(item.value);
-    //     triggerSearch.current=false
-    // }
-    const highlight = (index:number) => {
-        if(index<0) index=0
-        if(index>suggestions.length-1) index=suggestions.length-1
-        sethighlightIndex(index);
+    const handleUpDown = (item:DataSourceObject) => {
+        setInputValue(item.value)
+        triggerSearch.current=false
+    }
+    const handleArrowDown = () => {
+        if(highlightIndex+1>suggestions.length-1){
+            sethighlightIndex(-1)
+            
+            setInputValue(intialInputvalue.current);
+            triggerSearch.current=false
+            
+        }else{
+            sethighlightIndex(highlightIndex+1)
+            if(suggestions[highlightIndex+1])handleUpDown(suggestions[highlightIndex+1])
+        }
+    }
+    const handleArrowUp = () => {
+        if(highlightIndex-1==-1){
+            sethighlightIndex(highlightIndex-1)
+            setInputValue(intialInputvalue.current);
+            triggerSearch.current=false
+        }else if(highlightIndex-1<-1){
+            sethighlightIndex(suggestions.length-1)
+            if(suggestions[suggestions.length-1])handleUpDown(suggestions[suggestions.length-1])
+        }else{
+            sethighlightIndex(highlightIndex-1)
+            handleUpDown(suggestions[highlightIndex-1])
+        }
     }
     const handleKeyDown = (e:React.KeyboardEvent<HTMLInputElement>) => {
          switch(e.key){
@@ -117,12 +138,10 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
                 }
                 break
             case 'ArrowDown':
-                highlight(highlightIndex+1)
-                // if (suggestions[highlightIndex+1]) handleUpDown(suggestions[highlightIndex+1])
+                handleArrowDown()
                 break
             case 'ArrowUp':
-                highlight(highlightIndex-1)
-                // if (suggestions[highlightIndex-1]) handleUpDown(suggestions[highlightIndex-1])
+                handleArrowUp()
                 break
             case 'Escape':
                 setisFocus(false)

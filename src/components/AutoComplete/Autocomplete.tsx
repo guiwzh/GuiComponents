@@ -2,7 +2,7 @@ import React, {FC,useState,ChangeEvent ,ReactElement, useEffect} from 'react'
 import Input,{InputProps} from '../Input/input'
 import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
-
+import classNames from 'classnames';
 interface DataSourceObject {
     value: string;
   }
@@ -20,6 +20,8 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const [inputValue,setInputValue] = useState(value as string);
     const [suggestions,setSuggestions] = useState<DataSourceType[]>([]);
     const [loading, setloading] = useState(false);
+    const [highlightIndex,sethighlightIndex]= useState(-1);
+
     const debouncedValue = useDebounce(inputValue,500);//使用该钩子函数，将inputValue的值进行防抖处理
     useEffect(()=>{
         async function fetchData(){
@@ -36,6 +38,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
             }else{
                 setSuggestions([]);
             }
+            sethighlightIndex(-1);
         }
         fetchData();
     },[debouncedValue])
@@ -46,13 +49,48 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
             onSelect(item);
         }
     }
+    const highlight = (index:number) => {
+        if(index<0) index=0
+        if(index>suggestions.length-1) index=suggestions.length-1
+        sethighlightIndex(index);
+    }
+    const handleKeyDown = (e:React.KeyboardEvent<HTMLInputElement>) => {
+         switch(e.key){
+            case 'Enter':
+                if (suggestions[highlightIndex]){
+                    handleSelect(suggestions[highlightIndex])
+                }
+                break
+            case 'ArrowDown':
+                highlight(highlightIndex+1)
+                break
+            case 'ArrowUp':
+                highlight(highlightIndex-1)
+                break
+            case 'Escape':
+                setSuggestions([])
+                break
+            default:
+                break
+         }
+    }
     const generateDropdown = () => {
         return (
             <ul>
-                {suggestions?.map((item,index)=>(
-                    <li key={index} onClick={()=>handleSelect(item)}>{renderOption ? renderOption(item) : item.value}
-                    </li>
-                ))}
+                {suggestions.map((item,index)=>{
+                    const cnames= classNames('suggestion-item',{
+                        'item-highlighted':index===highlightIndex
+                    })
+                    return (
+                        <li key={index} 
+                            onClick={()=>handleSelect(item)}
+                            className={cnames}
+                        >
+                        {renderOption ? renderOption(item) : item.value}
+                        </li>
+                    )
+                }
+                )}
             </ul>
         )
     };
@@ -63,7 +101,12 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
 
     return (
         <div className='viking-auto-complete'>
-            <Input {...restprops} value={inputValue} onChange={handleChange}/>
+            <Input 
+                value={inputValue} 
+                onChange={handleChange}
+                {...restprops}
+                onKeyDown={handleKeyDown}//阻止默认的回车事件   
+            />
             {loading && <ul><Icon icon="spinner" spin></Icon>loading...</ul>}
             {suggestions.length>0 && generateDropdown()}
         </div>

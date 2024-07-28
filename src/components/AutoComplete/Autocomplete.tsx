@@ -13,10 +13,11 @@ export interface AutoCompletProps extends Omit<InputProps,'onSelect'> {
     fetchSuggestions: (string: string) => DataSourceType[] | Promise<DataSourceType[]> |undefined;
     onSelect?: (item: DataSourceType) => void;
     renderOption?: (item: DataSourceType) => ReactElement;
+    debounceTime?: number;
 }
 
 export const AutoComplete: FC<AutoCompletProps> = (props) => {
-    const {value,fetchSuggestions,onSelect,renderOption,style,...restprops} = props;
+    const {value,fetchSuggestions,onSelect,renderOption,style,debounceTime=300,...restprops} = props;
 
     const [inputValue,setInputValue] = useState(value as string);
     const [suggestions,setSuggestions] = useState<DataSourceType[]>([]);
@@ -28,7 +29,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const componentRef = useRef<HTMLDivElement>(null);
     const triggerSearch = useRef(false);//解决select后，再次触发fetchsuggestion的问题
     const fetchId = useRef(0);//解决竞态问题
-    const debouncedValue = useDebounce(inputValue,1000);//使用该hooks，将inputValue的值进行防抖处理
+    const debouncedValue = useDebounce(inputValue,debounceTime);//使用该hooks，将inputValue的值进行防抖处理
     useClickOutside(componentRef,()=>{setisFocus(false)});//使用该hooks，使得点击组件外部时，将suggestions清空
     useEffect(()=>{
         async function fetchData(){

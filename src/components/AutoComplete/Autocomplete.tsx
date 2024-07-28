@@ -1,4 +1,4 @@
-import React, {FC,useState,ChangeEvent ,ReactElement, useEffect, useRef, FocusEventHandler} from 'react'
+import React, {FC,useState,ChangeEvent ,ReactElement, useEffect, useRef} from 'react'
 import Input,{InputProps} from '../Input/input'
 import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
@@ -10,7 +10,7 @@ interface DataSourceObject {
 export type DataSourceType<T = {}> = T & DataSourceObject
 
 export interface AutoCompletProps extends Omit<InputProps,'onSelect'> {
-    fetchSuggestions: (string: string) => DataSourceType[] | Promise<DataSourceType[]> |undefined;
+    fetchSuggestions: (string: string) => DataSourceType[] | Promise<DataSourceType[]>;
     onSelect?: (item: DataSourceType) => void;
     renderOption?: (item: DataSourceType) => ReactElement;
     debounceTime?: number;
@@ -29,7 +29,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const componentRef = useRef<HTMLDivElement>(null);
     const triggerSearch = useRef(false);//解决select后，再次触发fetchsuggestion的问题
     const fetchId = useRef(0);//解决竞态问题
-    const intialInputvalue = useRef(value as string);//记录当前输入框不是通过Arraydown与Arrayup方法改变时的原始值
+    const intialInputvalue = useRef(value as string);//记录当前输入框不是通过Arraydown与Arrayup方法改变时的值
     const debouncedValue = useDebounce(inputValue,debounceTime);//使用该hooks，将inputValue的值进行防抖处理
     useClickOutside(componentRef,()=>{setisFocus(false)});//使用该hooks，使得点击组件外部时，将suggestions清空
     useEffect(()=>{
@@ -118,7 +118,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
         }
     }
     const handleArrowUp = () => {
-        if(highlightIndex-1==-1){
+        if(highlightIndex-1===-1){
             sethighlightIndex(highlightIndex-1)
             setInputValue(intialInputvalue.current);
             triggerSearch.current=false

@@ -1,4 +1,4 @@
-import React, {FC,useState,ChangeEvent ,ReactElement, useEffect} from 'react'
+import React, {FC,useState,ChangeEvent ,ReactElement, useEffect, useRef} from 'react'
 import Input,{InputProps} from '../Input/input'
 import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
@@ -21,11 +21,11 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const [suggestions,setSuggestions] = useState<DataSourceType[]>([]);
     const [loading, setloading] = useState(false);
     const [highlightIndex,sethighlightIndex]= useState(-1);
-
+    const triggerSearch = useRef(false);//解决select后，再次触发fetchsuggestion的问题
     const debouncedValue = useDebounce(inputValue,500);//使用该钩子函数，将inputValue的值进行防抖处理
     useEffect(()=>{
         async function fetchData(){
-            if (debouncedValue){
+            if (debouncedValue && triggerSearch.current){
                 setloading(true)
                 try{
                     const results = await fetchSuggestions(debouncedValue);
@@ -42,12 +42,20 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
         }
         fetchData();
     },[debouncedValue])
+
+    const handleChange = async (e:ChangeEvent<HTMLInputElement>)=>{
+        const value= e.target.value.trim();
+        setInputValue(value)
+        triggerSearch.current=true
+    };
+
     const handleSelect = (item:DataSourceType) => {
         setInputValue(item.value);
         setSuggestions([]);
         if (onSelect){
             onSelect(item);
         }
+        triggerSearch.current=false
     }
     const highlight = (index:number) => {
         if(index<0) index=0
@@ -94,11 +102,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
             </ul>
         )
     };
-    const handleChange = async (e:ChangeEvent<HTMLInputElement>)=>{
-        const value= e.target.value.trim();
-        setInputValue(value)
-    };
-
+  
     return (
         <div className='viking-auto-complete'>
             <Input 

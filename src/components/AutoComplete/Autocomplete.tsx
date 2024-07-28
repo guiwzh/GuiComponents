@@ -1,4 +1,4 @@
-import React, {FC,useState,ChangeEvent ,ReactElement, useEffect, useRef} from 'react'
+import React, {FC,useState,ChangeEvent ,ReactElement, useEffect, useRef, FocusEventHandler} from 'react'
 import Input,{InputProps} from '../Input/input'
 import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
@@ -22,12 +22,14 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const [suggestions,setSuggestions] = useState<DataSourceType[]>([]);
     const [loading, setloading] = useState(false);
     const [highlightIndex,sethighlightIndex]= useState(-1);
+    const [isFocus,setisFocus] = useState(true);
+
 
     const componentRef = useRef<HTMLDivElement>(null);
     const triggerSearch = useRef(false);//解决select后，再次触发fetchsuggestion的问题
     const fetchId = useRef(0);//解决竞态问题
     const debouncedValue = useDebounce(inputValue,1000);//使用该hooks，将inputValue的值进行防抖处理
-    useClickOutside(componentRef,()=>{setSuggestions([])});//使用该hooks，使得点击组件外部时，将suggestions清空
+    useClickOutside(componentRef,()=>{setisFocus(false)});//使用该hooks，使得点击组件外部时，将suggestions清空
     useEffect(()=>{
         async function fetchData(){
            
@@ -61,7 +63,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
         sethighlightIndex(-1)
     },[debouncedValue])
 
-    const handleChange = async (e:ChangeEvent<HTMLInputElement>)=>{
+    const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
         const value= e.target.value.trim();
         setInputValue(value)
         triggerSearch.current=true
@@ -100,6 +102,9 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
                 break
          }
     }
+    const handleFocus = (e:any) => {
+        setisFocus(true)
+    }
     const generateDropdown = () => {
         return (
             <ul className="viking-suggestion-list">
@@ -120,7 +125,6 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
             </ul>
         )
     };
-  
     return (
         <div className='viking-auto-complete' style={style} ref={componentRef}>
             <Input 
@@ -128,9 +132,10 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
                 onChange={handleChange}
                 {...restprops}
                 onKeyDown={handleKeyDown} 
+                onFocus={handleFocus}
             />
-            {loading && <ul><Icon icon="spinner" spin></Icon>loading...</ul>}
-            {suggestions.length>0 && generateDropdown()}
+            {isFocus && loading && <ul><Icon icon="spinner" spin></Icon>loading...</ul>}
+            {isFocus && suggestions.length>0 && generateDropdown()}
         </div>
     )
 }

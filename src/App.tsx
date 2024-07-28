@@ -18,11 +18,22 @@ function App() {
     )
   }
   const handleFetch = (str:string) => {
-    return fetch(`https://api.github.com/search/users?q=${str}`)
-      .then(res => res.json())
-      .then(res => {
-        return res.items.map((item: { login: any; })=> ({ value: item.login })).slice(0,10)
+
+    if(str==="a"){
+      return new Promise <DataSourceType[]>(resolve => {
+        setTimeout(() => resolve([{value:'a1'},{value:'a2'},{value:'a3'}] as DataSourceType[]),5000)
       })
+    }
+    if(str==="ab"){
+      return new Promise<DataSourceType[]>(resolve => {
+        setTimeout(() => resolve([{value:'a1'}] ) ,2000)
+      })
+    }
+    // return fetch(`https://api.github.com/search/users?q=${str}`)
+    //   .then(res => res.json())
+    //   .then(res => {
+    //     return res.items.map((item: { login: any; })=> ({ value: item.login })).slice(0,10)
+    //   })
   }
   return (
     <div className="App">

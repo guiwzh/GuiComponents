@@ -10,7 +10,7 @@ interface DataSourceObject {
 export type DataSourceType<T = {}> = T & DataSourceObject
 
 export interface AutoCompletProps extends Omit<InputProps,'onSelect'> {
-    fetchSuggestions: (string: string) => DataSourceType[] | Promise<DataSourceType[]>;
+    fetchSuggestions: (string: string) => DataSourceType[] | Promise<DataSourceType[]> |undefined;
     onSelect?: (item: DataSourceType) => void;
     renderOption?: (item: DataSourceType) => ReactElement;
 }
@@ -25,26 +25,40 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
 
     const componentRef = useRef<HTMLDivElement>(null);
     const triggerSearch = useRef(false);//解决select后，再次触发fetchsuggestion的问题
-    const debouncedValue = useDebounce(inputValue,500);//使用该hooks，将inputValue的值进行防抖处理
+    const fetchId = useRef(0);//解决竞态问题
+    const debouncedValue = useDebounce(inputValue,1000);//使用该hooks，将inputValue的值进行防抖处理
     useClickOutside(componentRef,()=>{setSuggestions([])});//使用该hooks，使得点击组件外部时，将suggestions清空
     useEffect(()=>{
         async function fetchData(){
-            if (debouncedValue && triggerSearch.current){
-                setloading(true)
-                try{
-                    const results = await fetchSuggestions(debouncedValue);
+           
+            if (triggerSearch.current){
+                fetchId.current++;
+                if(debouncedValue){
+                    const Id=fetchId.current;
+                    setloading(true)
+                    setSuggestions([])
+                    try{
+                        const results = await fetchSuggestions(debouncedValue);
+                        
+                        if( Id === fetchId.current && results){
+                            setloading(false)
+                            setSuggestions(results)
+                        }
+                    }catch (e){
+                        alert(e)
+                        setloading(false)
+                        setSuggestions([])
+                       
+                    }
+                }else{
                     setloading(false)
-                    setSuggestions(results);
-                }catch (e){
-                    alert(e)
-                    setloading(false)
+                    setSuggestions([])
+                    
                 }
-            }else{
-                setSuggestions([]);
             }
-            sethighlightIndex(-1);
         }
-        fetchData();
+        fetchData()
+        sethighlightIndex(-1)
     },[debouncedValue])
 
     const handleChange = async (e:ChangeEvent<HTMLInputElement>)=>{

@@ -21,7 +21,7 @@ function App() {
     return fetch(`https://api.github.com/search/users?q=${str}`)
       .then(res => res.json())
       .then(res => {
-        return res.items.map((item: { login: any; })=> ({ value: item.login }))
+        return res.items.map((item: { login: any; })=> ({ value: item.login })).slice(0,10)
       })
   }
   return (
@@ -45,7 +45,7 @@ function App() {
         <Input  defaultValue={['asd','sadsd']}></Input>
         <AutoComplete fetchSuggestions={handleFetch}
         renderOption={renderOption}
-        ></AutoComplete>
+        style={{width: '200px'}}></AutoComplete>
       </header>
     </div>
   );

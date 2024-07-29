@@ -67,7 +67,11 @@ function App() {
           onprogress={()=>console.log(1)}
           onSuccess={()=>console.log(2)}
           onError={(err)=>console.log(err)}
-        ></Upload>
+          multiple
+          drag
+        >
+          <Icon theme='success' icon='upload' size='8x'></Icon>
+        </Upload>
 
       </header>
     </div>

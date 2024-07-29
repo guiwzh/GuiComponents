@@ -1,8 +1,9 @@
-import react, {ChangeEvent, FC,useRef, useState } from 'react'
+import react, {ChangeEvent, Children, FC,ReactNode,useRef, useState } from 'react'
 import axios from 'axios'
 
 import UploadList from '../Upload/uploadList'
 import Button from '../Button/button'
+import Dragger from './dragger';
 
 export interface UploadFile {
   uid: string;
@@ -31,7 +32,8 @@ export interface UploadProps {
   withCredentials?: boolean;
   accept?: string;
   multiple?: boolean;
-  
+  children?:ReactNode;
+  drag?:boolean;
 }
 
 export const Upload:FC<UploadProps> = (props) => {
@@ -49,19 +51,16 @@ export const Upload:FC<UploadProps> = (props) => {
     data,
     withCredentials,
     accept,
-    multiple
+    multiple,
+    children,
+    drag
   } = props
   
   const fileInput = useRef<HTMLInputElement>(null)
 
   const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
-  const handleClick = () => {fileInput.current?.click()}
 
-  const updateFileList = (updateFile: UploadFile,uploadobj:Partial<UploadFile>) =>{
-    setFileList(prevList =>{
-      return prevList.map(file => file.uid === updateFile.uid ? {...file,...uploadobj} : file)
-    })
-  } 
+  const handleClick = () => {fileInput.current?.click()}
 
   const uploadFiles = (files: FileList) => {
     let postFiles =Array.from(files)
@@ -81,6 +80,12 @@ export const Upload:FC<UploadProps> = (props) => {
      
     })
   }
+  const updateFileList = (updateFile: UploadFile,uploadobj:Partial<UploadFile>) =>{
+    setFileList(prevList =>{
+      return prevList.map(file => file.uid === updateFile.uid ? {...file,...uploadobj} : file)
+    })
+  } 
+
   const post = (file:File) => {
     let _file: UploadFile = {
       uid: Date.now() + 'upload-file', 
@@ -145,12 +150,12 @@ export const Upload:FC<UploadProps> = (props) => {
     <div 
       className="viking-upload-component"
     >
-        <Button 
-          btnType='primary'
-          onClick={handleClick}
-        >
-          上传文件
-        </Button>
+        {drag ? 
+          <Dragger onFile={(files) => {uploadFiles(files)}}>
+            {children}
+          </Dragger>:
+          children
+        }
         <input 
           type="file" 
           className="viking-file-input"

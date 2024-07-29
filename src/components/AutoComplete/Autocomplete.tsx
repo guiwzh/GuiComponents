@@ -4,21 +4,24 @@ import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
 import classNames from 'classnames';
 import useClickOutside from '../../hooks/useClickOutside';
-interface DataSourceObject {
+export interface DataSourceType {
     value: string;
+    [key: string]: any;
   }
-export type DataSourceType<T = {}> = T & DataSourceObject
+// export type DataSourceType<T = {}> = T & DataSourceObject
 
-export interface AutoCompletProps extends Omit<InputProps,'onSelect'> {
+export interface AutoCompletProps extends Omit<InputProps,'onSelect' | 'onChange'> {
     fetchSuggestions: (string: string) => DataSourceType[] | Promise<DataSourceType[]>;
     onSelect?: (item: DataSourceType) => void;
+    onChange?: (str:string) => void;
+    onEnterDown?: (item: DataSourceType) => void;
     renderOption?: (item: DataSourceType) => ReactElement;
     debounceTime?: number;
     expireTime?: number;
 }
 
 export const AutoComplete: FC<AutoCompletProps> = (props) => {
-    const {value,fetchSuggestions,onSelect,renderOption,style,debounceTime=300,expireTime=3600000,...restprops} = props;
+    const {value,fetchSuggestions,onSelect,onChange,onEnterDown,renderOption,style,debounceTime=300,expireTime=3600000,...restprops} = props;
 
     const [inputValue,setInputValue] = useState(value as string);
     const [suggestions,setSuggestions] = useState<DataSourceType[]>([]);
@@ -26,7 +29,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const [highlightIndex,sethighlightIndex]= useState(-1);
     const [isFocus,setisFocus] = useState(true);
 
-    const componentRef = useRef<HTMLDivElement>(null);
+    const componentRef = useRef<HTMLDivElement>(null);//获取组件的Dom节点
     const triggerSearch = useRef(false);//解决select后，再次触发fetchsuggestion的问题
     const fetchId = useRef(0);//解决竞态问题
     const intialInputvalue = useRef(value as string);//记录当前输入框不是通过Arraydown与Arrayup方法改变时的值
@@ -88,6 +91,9 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
         const value= e.target.value.trim();
         setInputValue(value)
+        if (onChange) {
+            onChange(value)
+          }
         intialInputvalue.current=value
         triggerSearch.current=true
     };
@@ -101,7 +107,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
         }
         triggerSearch.current=false
     }
-    const handleUpDown = (item:DataSourceObject) => {
+    const handleUpDown = (item:DataSourceType) => {
         setInputValue(item.value)
         triggerSearch.current=false
     }
@@ -135,6 +141,9 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
             case 'Enter':
                 if (suggestions[highlightIndex]){
                     handleSelect(suggestions[highlightIndex])
+                    onEnterDown && onEnterDown(suggestions[highlightIndex])
+                }else{
+                    onEnterDown && onEnterDown({value:intialInputvalue.current})
                 }
                 break
             case 'ArrowDown':

@@ -14,6 +14,7 @@ function App() {
   const renderOption = (item:DataSourceType) => {
     return (<>
       <div>{item.value}</div>
+      <div>{item.label}</div>
       </>
     )
   }
@@ -32,8 +33,9 @@ function App() {
     return fetch(`https://api.github.com/search/users?q=${str}`)
       .then(res => res.json())
       .then(res => {
-        return res.items.map((item: { login: any; })=> ({ value: item.login })).slice(0,10)
+        return res.items.map((item: { login: any,id:string; })=> ({value:item.login, label:item.id })).slice(0,10)
       })
+  
   }
   return (
     <div className="App">
@@ -55,8 +57,11 @@ function App() {
         </Menu>
         <Input  defaultValue={['asd','sadsd']}></Input>
         <AutoComplete fetchSuggestions={handleFetch}
-        renderOption={renderOption}
-        style={{width: '200px'}}></AutoComplete>
+          renderOption={renderOption}
+          onEnterDown={(item)=>console.log(1,item)}
+          style={{width: '200px'}}>
+
+        </AutoComplete>
       </header>
     </div>
   );

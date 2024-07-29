@@ -20,12 +20,17 @@ export interface UploadProps {
 
   defaultFileList?: UploadFile[];
   beforeUpload?: (file: File) => boolean | Promise<File>;
-  onprogress?: (percentage: number, file: File) => void;
-  onSuccess?: (data: any, file: File) => void;
-  onError?: (err: any, file: File) => void;
-  onChange?: (file : File ) => void;
+  onprogress?: (percentage: number, file: UploadFile) => void;
+  onSuccess?: (data: any, file: UploadFile) => void;
+  onError?: (err: any, file: UploadFile) => void;
+  onChange?: (file : UploadFile) => void;
   onRemove?: (file: UploadFile) => void;
-  // children: React.ReactNode;
+  headers?: {[key: string]: any };
+  name?: string;
+  data?: {[key: string]: any };
+  withCredentials?: boolean;
+  accept?: string;
+  multiple?: boolean;
   
 }
 
@@ -38,7 +43,13 @@ export const Upload:FC<UploadProps> = (props) => {
     onSuccess, 
     onError,
     onChange,
-    onRemove
+    onRemove,
+    headers,
+    name='file',
+    data,
+    withCredentials,
+    accept,
+    multiple
   } = props
   
   const fileInput = useRef<HTMLInputElement>(null)
@@ -72,36 +83,46 @@ export const Upload:FC<UploadProps> = (props) => {
   }
   const post = (file:File) => {
     let _file: UploadFile = {
-      uid: Date.now() + 'file', 
+      uid: Date.now() + 'upload-file', 
       size: file.size, 
       name: file.name,
       percent : 0,
       status: 'ready', 
       raw: file
     }
-    setFileList([_file, ...fileList])
-
+    setFileList(prevList => {
+      return [_file, ...prevList]
+    })
 
     const formData = new FormData()
-    formData.append(file.name, file)
+    formData.append(name || 'file', file)
+    data && Object.keys(data).forEach(key => formData.append(key, data[key]))
     axios.post(action, formData, {
       headers: {
+        ...headers,
         'Content-Type': 'multipart/form-data'
       },
-      onUploadProgress: (progressEvent) => {
-        let percentage = Math.floor((progressEvent.loaded * 100) / progressEvent.total! || 0)
+      withCredentials,
+      onUploadProgress: (e) => {
+        let percentage = Math.floor((e.loaded * 100) / e.total! || 0)
         if(percentage < 100){
           updateFileList(_file, {percent: percentage, status: 'uploading'})
-          onprogress?.(percentage, file)
+          _file.status = 'uploading'
+          _file.percent = percentage
+          onprogress?.(percentage, _file)
         }
     }}).then(res => {
         updateFileList(_file, {status: 'success', response: res.data})
-        onSuccess?.(res.data, file)
-        onChange?.(file)
+        _file.status = 'success'
+        _file.response = res.data
+        onSuccess?.(res.data, _file)
+        onChange?.(_file)
     }).catch(err => {
         updateFileList(_file, {status: 'error', error: err})
-        onError?.(err, file)
-        onChange?.(file)
+        _file.status = 'error'
+        _file.error = err
+        onError?.(err, _file)
+        onChange?.(_file)
     })
   }
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -136,6 +157,8 @@ export const Upload:FC<UploadProps> = (props) => {
           style={{display: 'none'}} 
           ref={fileInput}
           onChange={handleFileChange}
+          accept={accept}
+          multiple={multiple}
         />
        <UploadList 
         fileList={fileList}

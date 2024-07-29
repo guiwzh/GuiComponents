@@ -34,6 +34,8 @@ export interface UploadProps {
   multiple?: boolean;
   children?:ReactNode;
   drag?:boolean;
+  maxsize?:number;
+  maxnum?:number;
 }
 
 export const Upload:FC<UploadProps> = (props) => {
@@ -53,7 +55,9 @@ export const Upload:FC<UploadProps> = (props) => {
     accept,
     multiple,
     children,
-    drag
+    drag,
+    maxsize,
+    maxnum
   } = props
   
   const fileInput = useRef<HTMLInputElement>(null)
@@ -63,8 +67,16 @@ export const Upload:FC<UploadProps> = (props) => {
   const handleClick = () => {fileInput.current?.click()}
 
   const uploadFiles = (files: FileList) => {
+    if(maxnum && files.length>maxnum){
+      alert(`文件数量不能超过${maxnum}`)
+      return
+    }
     let postFiles =Array.from(files)
     postFiles.forEach(file => {
+      if(maxsize && file.size>maxsize*1024*1024){
+        alert(`文件大小不能超过${maxsize}Mb`)
+        return
+      }
       if(!beforeUpload){
         post(file)
       }else{
@@ -154,7 +166,12 @@ export const Upload:FC<UploadProps> = (props) => {
           <Dragger onFile={(files) => {uploadFiles(files)}}>
             {children}
           </Dragger>:
-          children
+          <Button 
+            btnType='primary'
+            onClick={handleClick}
+          >
+            上传文件
+          </Button> 
         }
         <input 
           type="file" 

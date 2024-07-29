@@ -63,7 +63,7 @@ function App() {
           style={{width: '200px'}}>
         </AutoComplete>
         <Upload 
-          action={"https://jsonplaceholder.typicode.com/posts/"}
+          action={"https://run.mocky.io/v3/37194fe8-8307-4e05-bef9-76c294c1601c"}
           onprogress={()=>console.log(1)}
           onSuccess={()=>console.log(2)}
           onError={(err)=>console.log(err)}

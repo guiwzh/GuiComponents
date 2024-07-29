@@ -1,6 +1,7 @@
 import react, {ChangeEvent, FC,useRef, useState } from 'react'
 import axios from 'axios'
 
+import UploadList from '../Upload/uploadList'
 import Button from '../Button/button'
 
 export interface UploadFile {
@@ -42,7 +43,7 @@ export const Upload:FC<UploadProps> = (props) => {
   
   const fileInput = useRef<HTMLInputElement>(null)
 
-  const [fileList, setFileList] = useState<UploadFile[]>([])
+  const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
   const handleClick = () => {fileInput.current?.click()}
 
   const updateFileList = (updateFile: UploadFile,uploadobj:Partial<UploadFile>) =>{
@@ -112,6 +113,13 @@ export const Upload:FC<UploadProps> = (props) => {
       }
     }
   }
+  const handleRemove = (file: UploadFile) => {
+    setFileList((prevList) => {
+      return prevList.filter(item => item.uid !== file.uid)
+    })
+    onRemove?.(file)
+    
+  }
   return(
     <div 
       className="viking-upload-component"
@@ -129,6 +137,10 @@ export const Upload:FC<UploadProps> = (props) => {
           ref={fileInput}
           onChange={handleFileChange}
         />
+       <UploadList 
+        fileList={fileList}
+        onRemove={handleRemove}
+      />
     </div>
   )
 }

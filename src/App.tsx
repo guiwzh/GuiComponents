@@ -8,6 +8,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import Icon from './components/Icon/icon';
 import Input from './components/Input/input';
 import AutoComplete, { DataSourceType } from './components/AutoComplete/Autocomplete';
+import Upload from './components/Upload/upload';
 library.add(fas)
 
 function App() {
@@ -58,10 +59,16 @@ function App() {
         <Input  defaultValue={['asd','sadsd']}></Input>
         <AutoComplete fetchSuggestions={handleFetch}
           renderOption={renderOption}
-          onEnterDown={(item)=>console.log(1,item)}
+          // onEnterDown={(item)=>console.log(1,item)}
           style={{width: '200px'}}>
-
         </AutoComplete>
+        <Upload 
+          action={"https://jsonplaceholder.typicode.com/posts/"}
+          onprogress={()=>console.log(1)}
+          onSuccess={()=>console.log(2)}
+          onError={(err)=>console.log(err)}
+        ></Upload>
+
       </header>
     </div>
   );

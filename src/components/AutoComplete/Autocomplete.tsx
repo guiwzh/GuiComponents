@@ -91,9 +91,8 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
     const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
         const value= e.target.value.trim();
         setInputValue(value)
-        if (onChange) {
-            onChange(value)
-          }
+        onChange?.(value)
+          
         intialInputvalue.current=value
         triggerSearch.current=true
     };
@@ -102,9 +101,8 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
         setInputValue(item.value)
         intialInputvalue.current=item.value
         setSuggestions([]);
-        if (onSelect){
-            onSelect(item);
-        }
+        onSelect?.(item);
+        
         triggerSearch.current=false
     }
     const handleUpDown = (item:DataSourceType) => {
@@ -141,9 +139,9 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
             case 'Enter':
                 if (suggestions[highlightIndex]){
                     handleSelect(suggestions[highlightIndex])
-                    onEnterDown && onEnterDown(suggestions[highlightIndex])
+                    onEnterDown?.(suggestions[highlightIndex])
                 }else{
-                    onEnterDown && onEnterDown({value:intialInputvalue.current})
+                    onEnterDown?.({value:intialInputvalue.current})
                 }
                 break
             case 'ArrowDown':

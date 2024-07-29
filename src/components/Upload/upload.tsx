@@ -1,5 +1,5 @@
 import react, {ChangeEvent, Children, FC,ReactNode,useRef, useState } from 'react'
-import axios from 'axios'
+import axios, { CancelTokenSource } from 'axios'
 
 import UploadList from '../Upload/uploadList'
 import Button from '../Button/button'
@@ -15,7 +15,9 @@ export interface UploadFile {
   percent?: number;
   error?: any;
 }
-
+export interface sourceDict {
+  [key:string]:CancelTokenSource
+}
 export interface UploadProps {
   action: string;
 
@@ -61,6 +63,7 @@ export const Upload:FC<UploadProps> = (props) => {
   } = props
   
   const fileInput = useRef<HTMLInputElement>(null)
+  const sourceRecord = useRef<sourceDict>({})
 
   const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
 
@@ -114,12 +117,15 @@ export const Upload:FC<UploadProps> = (props) => {
     const formData = new FormData()
     formData.append(name || 'file', file)
     data && Object.keys(data).forEach(key => formData.append(key, data[key]))
+    const source = axios.CancelToken.source();
+    sourceRecord.current = {...sourceRecord.current, [_file.uid]: source}
     axios.post(action, formData, {
       headers: {
         ...headers,
         'Content-Type': 'multipart/form-data'
       },
       withCredentials,
+      cancelToken: source.token,
       onUploadProgress: (e) => {
         let percentage = Math.floor((e.loaded * 100) / e.total! || 0)
         if(percentage < 100){
@@ -135,6 +141,9 @@ export const Upload:FC<UploadProps> = (props) => {
         onSuccess?.(res.data, _file)
         onChange?.(_file)
     }).catch(err => {
+        if (axios.isCancel(err)) {
+          console.log(`${_file.name}${err.message}`);
+        }
         updateFileList(_file, {status: 'error', error: err})
         _file.status = 'error'
         _file.error = err
@@ -155,6 +164,7 @@ export const Upload:FC<UploadProps> = (props) => {
     setFileList((prevList) => {
       return prevList.filter(item => item.uid !== file.uid)
     })
+    sourceRecord.current[file.uid]?.cancel('取消上传')
     onRemove?.(file)
     
   }

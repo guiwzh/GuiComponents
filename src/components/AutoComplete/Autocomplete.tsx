@@ -52,7 +52,7 @@ export const AutoComplete: FC<AutoCompletProps> = (props) => {
                             setSuggestions(results)
                             const item = {
                                 value: results,  // 实际数据
-                                expiry: new Date().getTime() + expireTime, // 当前时间加上1小时的过期时间 (单位毫秒)
+                                expiry: Date.now() + expireTime, // 当前时间加上1小时的过期时间 (单位毫秒)
                             };
                             localStorage.setItem(debouncedValue, JSON.stringify(item))
                         }

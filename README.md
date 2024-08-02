@@ -1,4 +1,4 @@
-# 这里是一套个人开发的React组件库
+# 这里是一套个人开发的小型React组件库
 
 技术栈：React18+Typescript+SCSS
 

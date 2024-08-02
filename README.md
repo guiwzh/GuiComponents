@@ -2,7 +2,7 @@
 
 技术栈：React18+Typescript+SCSS
 
-## Button组件
+## `Button组件`
 
 * Props包含size，btnType,href等
 * 如果设置btnType为link，则原生标签为<a></a>,并将其href设置为props传入的href

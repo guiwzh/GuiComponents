@@ -20,8 +20,6 @@ export interface sourceDict {
 }
 export interface UploadProps {
   action: string;
-
-  defaultFileList?: UploadFile[];
   beforeUpload?: (file: File) => boolean | Promise<File>;
   onprogress?: (percentage: number, file: UploadFile) => void;
   onSuccess?: (data: any, file: UploadFile) => void;
@@ -46,15 +44,14 @@ export interface UploadProps {
 export const Upload:FC<UploadProps> = (props) => {
   const {
     action,
-    defaultFileList,
     beforeUpload,
     onprogress, 
     onSuccess, 
     onError,
     onChange,
     onRemove,
-    headers,
     name='file',
+    headers,
     data,
     withCredentials,
     accept,
@@ -71,7 +68,7 @@ export const Upload:FC<UploadProps> = (props) => {
   const fileInput = useRef<HTMLInputElement>(null)
   const sourceRecord = useRef<sourceDict>({})
 
-  const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
+  const [fileList, setFileList] = useState<UploadFile[]>([])
 
   const handleClick = () => {fileInput.current?.click()}
 
@@ -183,11 +180,11 @@ export const Upload:FC<UploadProps> = (props) => {
             {children}
           </Dragger>:
           <Button 
-            btnType='primary'
+            btnType='default'
             onClick={handleClick}
             style={styleButton}
           >
-            上传文件
+            {children}
           </Button> 
         }
         <input 

@@ -1,11 +1,11 @@
-# Getting Started with Create React App
-这里是桂望哲开发的仿AntDesig组件库，技术栈：React+Typescript+SCSS
+# 这里是一套个人开发的React组件库
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+技术栈：React18+Typescript+SCSS
 
-## Available Scripts
+## Button组件
 
-In the project directory, you can run:
+* Props包含size，btnType,href等
+* 如果设置btnType为link，则原生标签为<a></a>,并将其href设置为props传入的href
 
 ### `npm start`
 

@@ -3,11 +3,12 @@ import classNames from 'classnames'
 
 interface DraggerProps {
   onFile: (files: FileList) => void;
-  children?: ReactNode
+  children?: ReactNode;
+  style?:React.CSSProperties
 }
 
 export const Dragger: FC<DraggerProps> = (props) => {
-  const { onFile, children } = props
+  const { onFile, children, style} = props
   const [ dragOver, setDragOver ] = useState(false)
   const klass = classNames('viking-uploader-dragger', {
     'is-dragover': dragOver
@@ -27,6 +28,7 @@ export const Dragger: FC<DraggerProps> = (props) => {
       onDragOver={e => { handleDrag(e, true)}}
       onDragLeave={e => { handleDrag(e, false)}}
       onDrop={handleDrop}
+      style={style}
     >
       {children}
     </div>

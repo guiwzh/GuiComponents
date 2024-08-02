@@ -1,14 +1,13 @@
 import React from 'react';
 import Button from './components/Button/button';
-import Menu from './components/Menu/menu';
-import MenuItem from './components/Menu/menuItem';
-import SubMenu from './components/Menu/subMenu';
+import Menu ,{MenuItem,SubMenu} from './components/Menu';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
-import Icon from './components/Icon/icon';
-import Input from './components/Input/input';
-import AutoComplete, { DataSourceType } from './components/AutoComplete/Autocomplete';
+import Icon from './components/Icon';
+import Input from './components/Input';
+import AutoComplete, { DataSourceType } from './components/AutoComplete/autoComplete';
 import Upload from './components/Upload/upload';
+
 library.add(fas)
 
 function App() {
@@ -45,16 +44,16 @@ function App() {
         <Button btnType='primary'>Heello</Button>
         <Menu defaultIndex='0' onSelect={(e,index) => console.log(e,index)} mode="vertical">
           <MenuItem>link1</MenuItem>
-          <MenuItem>link2</MenuItem>
-          <SubMenu title='子菜单'>
-          <MenuItem>
+          <Menu.Item>link2</Menu.Item>
+          <Menu.SubMenu title='子菜单'>
+          <Menu.Item>
               link3
-          </MenuItem>
+          </Menu.Item>
           <SubMenu title='子菜单2'>
-            <MenuItem>link4</MenuItem>
+            <Menu.Item>link4</Menu.Item>
           </SubMenu>
           <MenuItem>link5</MenuItem>
-          </SubMenu>
+          </Menu.SubMenu>
         </Menu>
         <Input  defaultValue={['asd','sadsd']}></Input>
         <AutoComplete fetchSuggestions={handleFetch}
@@ -70,6 +69,7 @@ function App() {
           multiple
           maxsize={1}
           maxnum={1}
+          styleUploadList={{width:'100px'}}
         >
           <Icon theme='success' icon='upload' size='8x'></Icon>
         </Upload>

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "build",
+    "module": "esnext",
+    "target": "es5",
+    "declaration": true,//生成.d.ts文件
+    "jsx": "react-jsx",//支持react
+    "moduleResolution":"Node",//支持import
+    "allowSyntheticDefaultImports": true,
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "src/setupTests.ts",
+  ]
+}

@@ -5,16 +5,18 @@ import Progress from '../Progress/progress'
 interface UploadListProps {
   fileList: UploadFile[];
   onRemove: (_file: UploadFile) => void;
+  style?: React.CSSProperties;
 }
 
 export const UploadList: FC<UploadListProps> = (props) => {
   const {
     fileList,
     onRemove,
+    style
   } = props
   console.log('firelist', fileList)
   return (
-    <ul className="viking-upload-list">
+    <ul className="viking-upload-list" style={style}>
       {fileList.map(item => {
         return (
           <li className="viking-upload-list-item" key={item.uid}>

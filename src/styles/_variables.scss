@@ -281,32 +281,3 @@ $progress-bg:                       $gray-200 !default;
 $progress-border-radius:            $border-radius !default;
 $progress-bar-color:                $white !default;
 $progress-bar-transition:           width .6s ease !default;
-
-// Alerts
-//
-// Define alert colors, border radius, and padding.
-
-$alert-padding-y:                   .75rem !default;
-$alert-padding-x:                   1.25rem !default;
-$alert-margin-bottom:               1rem !default;
-$alert-border-radius:               $border-radius !default;
-$alert-title-font-weight:           $font-weight-bold !default;
-$alert-border-width:                $border-width !default;
-$alert-description-font-size:       $font-size-sm !default;
-$alert-description-top-margin:      .3rem !default;
-
-// Navs
-
-$nav-link-padding-y:                .5rem !default;
-$nav-link-padding-x:                1rem !default;
-$nav-link-disabled-color:           $gray-600 !default;
-
-$nav-tabs-border-color:             $gray-300 !default;
-$nav-tabs-border-width:             $border-width !default;
-$nav-tabs-border-radius:            $border-radius !default;
-$nav-tabs-link-hover-border-color:  $gray-200 $gray-200 $nav-tabs-border-color !default;
-$nav-tabs-link-hover-color:         $primary !default;
-$nav-tabs-link-active-color:        $primary !default;
-$nav-tabs-link-active-bg:           $body-bg !default;
-$nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg !default;
-$nav-tabs-content-margin:           1rem !default;

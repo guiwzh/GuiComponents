@@ -1,4 +1,4 @@
-import react, {ChangeEvent, Children, FC,ReactNode,useRef, useState } from 'react'
+import {ChangeEvent, FC,ReactNode,useRef, useState } from 'react'
 import axios, { CancelTokenSource } from 'axios'
 
 import UploadList from '../Upload/uploadList'
@@ -38,6 +38,9 @@ export interface UploadProps {
   drag?:boolean;
   maxsize?:number;
   maxnum?:number;
+  styleDrag?: React.CSSProperties;
+  styleButton?: React.CSSProperties;
+  styleUploadList?: React.CSSProperties;
 }
 
 export const Upload:FC<UploadProps> = (props) => {
@@ -59,7 +62,10 @@ export const Upload:FC<UploadProps> = (props) => {
     children,
     drag,
     maxsize,
-    maxnum
+    maxnum,
+    styleButton,
+    styleDrag,
+    styleUploadList
   } = props
   
   const fileInput = useRef<HTMLInputElement>(null)
@@ -173,12 +179,13 @@ export const Upload:FC<UploadProps> = (props) => {
       className="viking-upload-component"
     >
         {drag ? 
-          <Dragger onFile={(files) => {uploadFiles(files)}}>
+          <Dragger  style={styleDrag} onFile={(files) => {uploadFiles(files)}}>
             {children}
           </Dragger>:
           <Button 
             btnType='primary'
             onClick={handleClick}
+            style={styleButton}
           >
             上传文件
           </Button> 
@@ -192,7 +199,7 @@ export const Upload:FC<UploadProps> = (props) => {
           accept={accept}
           multiple={multiple}
         />
-       <UploadList 
+       <UploadList style={styleUploadList}
         fileList={fileList}
         onRemove={handleRemove}
       />

@@ -59,6 +59,7 @@ function App() {
         <AutoComplete fetchSuggestions={handleFetch}
           renderOption={renderOption}
           // onEnterDown={(item)=>console.log(1,item)}
+          onChange={()=>console.log(1)}
           style={{width: '200px'}}>
         </AutoComplete>
         <Upload 
@@ -71,7 +72,7 @@ function App() {
           maxnum={1}
           styleUploadList={{width:'100px'}}
         >
-          <Icon theme='success' icon='upload' size='8x'></Icon>
+          <Icon theme='primary' icon='upload' size='4x'></Icon>
         </Upload>
 
       </header>

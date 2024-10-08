@@ -1,16 +1,20 @@
-import { useState,FC } from 'react';
-import { flushSync } from 'react-dom';
-
+import { useState, FC } from "react";
+import { flushSync } from "react-dom";
 
 interface VirtualListProps {
   containerHeight: number;
   itemHeight: number;
   itemCount: number;
-  children:React.ComponentType<{ index: number; style: React.CSSProperties }>
+  children: React.ComponentType<{ index: number; style: React.CSSProperties }>;
 }
-const VirtualList:FC<VirtualListProps>=({ containerHeight, itemHeight, itemCount, children })=> {
+const VirtualList: FC<VirtualListProps> = ({
+  containerHeight,
+  itemHeight,
+  itemCount,
+  children,
+}) => {
   // children 语义不好，赋值给 Component
-  const Component = children
+  const Component = children;
 
   const contentHeight = itemHeight * itemCount; // 内容高度
   const [scrollTop, setScrollTop] = useState<number>(0); // 滚动高度
@@ -34,7 +38,7 @@ const VirtualList:FC<VirtualListProps>=({ containerHeight, itemHeight, itemCount
 
   return (
     <div
-      style={{ height: containerHeight, overflow: 'auto' }}
+      style={{ height: containerHeight, overflow: "auto" }}
       onScroll={(e) => {
         flushSync(() => {
           setScrollTop((e.target as HTMLDivElement).scrollTop);
@@ -46,6 +50,6 @@ const VirtualList:FC<VirtualListProps>=({ containerHeight, itemHeight, itemCount
       </div>
     </div>
   );
-}
+};
 
 export default VirtualList;

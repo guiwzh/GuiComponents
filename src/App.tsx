@@ -7,8 +7,28 @@ import Icon from './components/Icon';
 import Input from './components/Input';
 import AutoComplete, { DataSourceType } from './components/AutoComplete/autoComplete';
 import Upload from './components/Upload/upload';
-
+import VirtualList from './components/VirtualList';
 library.add(fas)
+
+
+interface ItemProps {
+  style: React.CSSProperties;
+  index: number;
+}
+const Item:React.FC<ItemProps>=({ style, index })=> {
+  return (
+    <div
+      className="item"
+      style={{
+        ...style,
+        backgroundColor: index % 2 === 0 ? 'burlywood' : 'cadetblue'
+      }}
+    >
+      {index}
+    </div>
+  );
+}
+const list = new Array(10000).fill(0).map((item, i) => i);
 
 function App() {
   const renderOption = (item:DataSourceType) => {
@@ -74,8 +94,19 @@ function App() {
         >
           <Icon theme='primary' icon='upload' size='4x'></Icon>
         </Upload>
-
+ 
       </header>
+      <>
+      列表项高度固定 - 虚拟列表实现
+      <VirtualList
+        containerHeight={300}
+        itemCount={list.length}
+        itemHeight={50}
+      >
+        {Item}
+     
+      </VirtualList>
+    </>
     </div>
   );
 }

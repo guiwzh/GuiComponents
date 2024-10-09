@@ -14,6 +14,7 @@ import VirtualList from "./components/VirtualList";
 import LazyLoad from "./components/LazyLoad";
 import img2 from "./img2.png";
 
+import Guang from "./Guang";
 library.add(fas);
 
 interface ItemProps {
@@ -35,7 +36,7 @@ const Item: React.FC<ItemProps> = ({ style, index }) => {
 };
 const list = new Array(10000).fill(0).map((item, i) => i);
 
-const LazyGui = React.lazy(() => import("./Guang"));
+// const LazyGui = React.lazy(() => import("./Guang"));
 function App() {
   const renderOption = (item: DataSourceType) => {
     return (
@@ -97,29 +98,29 @@ function App() {
         ></AutoComplete>
         <Upload
           action={
-            "https://run.mocky.io/v3/37194fe8-8307-4e05-bef9-76c294c1601c"
+            "https://run.mocky.io/v3/9b60839d-d5ee-40b2-9149-bc006b7d5f15"
           }
           onprogress={() => console.log(1)}
           onSuccess={() => console.log(2)}
           onError={(err) => console.log(err)}
           multiple
-          maxsize={1}
+          maxsize={5}
           maxnum={1}
-          styleUploadList={{ width: "100px" }}
+          styleUploadList={{ width: "300px" }}
         >
           <Icon theme="primary" icon="upload" size="4x"></Icon>
         </Upload>
       </header>
-      <>
-        列表项高度固定 - 虚拟列表实现
+      {/* 列表项高度固定 - 虚拟列表实现
         <VirtualList
           containerHeight={300}
           itemCount={list.length}
           itemHeight={50}
         >
           {Item}
-        </VirtualList>
-      </>
+        </VirtualList> */}
+
+      {/* <p>xxxxxx</p>
       <p>xxxxxx</p>
       <p>xxxxxx</p>
       <p>xxxxxx</p>
@@ -147,17 +148,17 @@ function App() {
       <p>xxxxxx</p>
       <p>xxxxxx</p>
       <p>xxxxxx</p>
-      <p>xxxxxx</p>
-      <p>xxxxxx</p>
-      <LazyLoad
+      <p>xxxxxx</p> */}
+      {/* <LazyLoad
         placeholder={<div>loading...</div>}
         onContentVisible={() => {
           console.log("comp visible");
         }}
       >
-        <LazyGui></LazyGui>
-      </LazyLoad>
-      <LazyLoad
+      
+        <Guang></Guang>
+      </LazyLoad> */}
+      {/* <LazyLoad
         placeholder={<div>loading...</div>}
         offset={300}
         onContentVisible={() => {
@@ -165,7 +166,7 @@ function App() {
         }}
       >
         <img src={img2} />
-      </LazyLoad>
+      </LazyLoad> */}
     </div>
   );
 }

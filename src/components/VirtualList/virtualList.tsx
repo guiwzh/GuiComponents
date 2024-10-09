@@ -40,8 +40,10 @@ const VirtualList: FC<VirtualListProps> = ({
     <div
       style={{ height: containerHeight, overflow: "auto" }}
       onScroll={(e) => {
-        flushSync(() => {
-          setScrollTop((e.target as HTMLDivElement).scrollTop);
+        requestAnimationFrame(() => {
+          flushSync(() => {
+            setScrollTop((e.target as HTMLDivElement).scrollTop);
+          });
         });
       }}
     >

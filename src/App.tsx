@@ -111,14 +111,14 @@ function App() {
           <Icon theme="primary" icon="upload" size="4x"></Icon>
         </Upload>
       </header>
-      {/* 列表项高度固定 - 虚拟列表实现
-        <VirtualList
-          containerHeight={300}
-          itemCount={list.length}
-          itemHeight={50}
-        >
-          {Item}
-        </VirtualList> */}
+      {/* 列表项高度固定 - 虚拟列表实现 */}
+      <VirtualList
+        containerHeight={300}
+        itemCount={list.length}
+        itemHeight={50}
+      >
+        {Item}
+      </VirtualList>
 
       {/* <p>xxxxxx</p>
       <p>xxxxxx</p>

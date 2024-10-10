@@ -18,8 +18,8 @@ import Guang from "./Guang";
 library.add(fas);
 
 interface ItemProps {
-  style: React.CSSProperties;
-  index: number;
+  style?: React.CSSProperties;
+  index?: number;
 }
 const Item: React.FC<ItemProps> = ({ style, index }) => {
   return (
@@ -27,7 +27,7 @@ const Item: React.FC<ItemProps> = ({ style, index }) => {
       className="item"
       style={{
         ...style,
-        backgroundColor: index % 2 === 0 ? "burlywood" : "cadetblue",
+        backgroundColor: index! % 2 === 0 ? "burlywood" : "cadetblue",
       }}
     >
       {index}
@@ -117,7 +117,7 @@ function App() {
         itemCount={list.length}
         itemHeight={50}
       >
-        {Item}
+        <Item />
       </VirtualList>
 
       {/* <p>xxxxxx</p>

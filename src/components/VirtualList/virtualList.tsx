@@ -1,11 +1,11 @@
-import { useState, FC } from "react";
+import { useState, FC, Children, cloneElement } from "react";
 import { flushSync } from "react-dom";
 
 interface VirtualListProps {
   containerHeight: number;
   itemHeight: number;
   itemCount: number;
-  children: React.ComponentType<{ index: number; style: React.CSSProperties }>;
+  children: JSX.Element;
 }
 const VirtualList: FC<VirtualListProps> = ({
   containerHeight,
@@ -14,7 +14,9 @@ const VirtualList: FC<VirtualListProps> = ({
   children,
 }) => {
   // children 语义不好，赋值给 Component
-  const Component = children;
+  if (Children.count(children) > 1) {
+    throw new Error("VirtualList only accept one child");
+  }
 
   const contentHeight = itemHeight * itemCount; // 内容高度
   const [scrollTop, setScrollTop] = useState<number>(0); // 滚动高度
@@ -33,7 +35,12 @@ const VirtualList: FC<VirtualListProps> = ({
   // 需要渲染的 items
   const items = [];
   for (let i = startIdx; i <= endIdx; i++) {
-    items.push(<Component key={i} index={i} style={{ height: itemHeight }} />);
+    items.push(
+      cloneElement(children, {
+        index: i,
+        style: { height: itemHeight },
+      })
+    );
   }
 
   return (

@@ -53,3 +53,24 @@
 * props包含headers,data,withCredentials,accept,multiple,maxsize,maxnum等属性，可对文件上传时的请求头，额外的上传数据，是否携带cookie,接受的文件类型，是否支持多文件上传，文件的最大大小以及数量进行设定。
 * 实现了通过宽度变化的进度条以及/文件上传百分比与对应文件名对不同文件上传的进度进行动态展示，进度条的右侧图标根据文件对象的上传的三种状态而动态改变，当鼠标移动到进度条上时，图标会变为叉号。
 * 通过useRef与axios中的cancelToken实现了点击对应文件的叉号图标可以取消该文件的上传的功能。
+
+## `LazyLoad组件`
+
+* 实现了对其子组件以及图片等内容进入可视区域内再进行异步加载的功能，支持自定义占位内容以及与可视区域的触发距离。
+* 通过IntersectionObserver判断组件是否进入可视区域
+
+
+## `VirtualList组件`
+
+* 实现了只渲染可视区域内的列表项，不额外增加Dom结构。
+* 通过计算起始index与结束index并结合transfrom：translateY 只渲染可视区域内的列表项，其余的列表项不渲染，从而减少了Dom结构的增加，提高了性能。
+
+## `Keep-alive组件`
+ 
+* Keep-alive为一个利用react Router并根据页面路径判断是否进行缓存的页面缓存组件。
+* 通过useContext对组件进行缓存，并通过hidden属性将组件进行展示隐藏。
+
+## `Signature组件`
+
+* 通过canvas实现了手写签名板的功能，支持清除、保存签名。
+* 保存签名时，将canvas中的内容转化为base64格式，作为钩子函数onSave的传入值。

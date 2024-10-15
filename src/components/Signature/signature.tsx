@@ -4,11 +4,13 @@ interface SignatureProps {
   width?: number;
   height?: number;
   style?: React.CSSProperties;
+  onSave?: (dataUrl: string | undefined) => void;
 }
 const Signature: FC<SignatureProps> = ({
   width = 400,
   height = 200,
   style,
+  onSave,
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [strokeStyle, setStrokeStyle] = useState("pen");
@@ -32,8 +34,7 @@ const Signature: FC<SignatureProps> = ({
     setIsDrawing(true);
     ctx.current?.beginPath();
     const { offsetX, offsetY } = getEventPosition(e);
-    // lastX = offsetX;
-    // lastY = offsetY;
+
     setPoints({ x: offsetX, y: offsetY });
     ctx.current?.moveTo(offsetX, offsetY); // 移动画笔到初始位置
   };
@@ -90,6 +91,11 @@ const Signature: FC<SignatureProps> = ({
     setStrokeStyle(e.target.value);
     updateStrokeStyle();
   };
+  const handleSave = () => {
+    const dataURL = canvas.current?.toDataURL();
+    // 在此处可以将 dataURL 发送到服务器或进行其他操作
+    onSave?.(dataURL);
+  };
   return (
     <>
       <canvas
@@ -125,7 +131,7 @@ const Signature: FC<SignatureProps> = ({
         >
           清空
         </button>
-        <button onClick={() => {}}>保存</button>
+        <button onClick={handleSave}>保存</button>
       </div>
     </>
   );

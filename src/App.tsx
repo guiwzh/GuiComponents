@@ -120,7 +120,7 @@ function App() {
       >
         <Item />
       </VirtualList> */}
-      <Signature></Signature>
+      <Signature onSave={(e) => console.log(e)}></Signature>
       {/* <p>xxxxxx</p>
       <p>xxxxxx</p>
       <p>xxxxxx</p>

@@ -2,6 +2,7 @@
     border: 1px solid #000;
     background-color: #fff;
     box-sizing: border-box;
+    touch-action: none //解决touch preventdefault报错的问题（通过CSS的方式禁用）
 }
 .controls{
 

@@ -28,7 +28,7 @@ const Signature: FC<SignatureProps> = ({
   const startDrawing = (
     e: React.MouseEvent<HTMLCanvasElement> & React.TouchEvent<HTMLCanvasElement>
   ) => {
-    e.preventDefault();
+    // e.preventDefault();
     setIsDrawing(true);
     ctx.current?.beginPath();
     const { offsetX, offsetY } = getEventPosition(e);
@@ -41,7 +41,7 @@ const Signature: FC<SignatureProps> = ({
   const draw = (
     e: React.MouseEvent<HTMLCanvasElement> & React.TouchEvent<HTMLCanvasElement>
   ) => {
-    e.preventDefault(); // 阻止默认行为，避免页面滚动
+    // e.preventDefault(); // 阻止默认行为，避免页面滚动
     if (!isDrawing) return; // 如果不是在绘制，直接返回
 
     // 获取当前触点位置
@@ -62,7 +62,7 @@ const Signature: FC<SignatureProps> = ({
   const stopDrawing = (
     e: React.TouchEvent<HTMLCanvasElement> & React.MouseEvent<HTMLCanvasElement>
   ) => {
-    e.preventDefault(); // 阻止默认行为
+    // e.preventDefault(); // 阻止默认行为
     setIsDrawing(false); // 结束绘制状态
   };
 
@@ -70,11 +70,10 @@ const Signature: FC<SignatureProps> = ({
     e: React.MouseEvent<HTMLCanvasElement> & React.TouchEvent<HTMLCanvasElement>
   ) => {
     const offsetX =
-      e.nativeEvent.offsetX ||
-      e.touches[0].clientX - canvas.current?.offsetLeft!;
+      e.nativeEvent.offsetX ??
+      e.touches[0].clientX - canvas.current!.offsetLeft;
     const offsetY =
-      e.nativeEvent.offsetY ||
-      e.touches[0].clientY - canvas.current?.offsetTop!;
+      e.nativeEvent.offsetY ?? e.touches[0].clientY - canvas.current!.offsetTop;
     return { offsetX, offsetY };
   };
 

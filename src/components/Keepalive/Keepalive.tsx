@@ -37,7 +37,7 @@ const isKeepPath = (keepPaths: Array<string | RegExp>, path: string) => {
   return isKeep;
 };
 
-export function useKeepOutlet(isopen?: boolean) {
+export function useKeepOutlet() {
   const location = useLocation();
   const element = useOutlet();
 

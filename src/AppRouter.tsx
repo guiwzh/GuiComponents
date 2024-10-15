@@ -47,6 +47,8 @@ const Bbb = () => {
         <button onClick={() => setCount((count) => count + 1)}>加一</button>
       </p>
       <Link to="/">去首页</Link>
+      <Link to="ddd">去ddd</Link>
+      <Outlet></Outlet>
     </div>
   );
 };
@@ -72,6 +74,12 @@ const routes = [
       {
         path: "/bbb",
         element: <Bbb></Bbb>,
+        children: [
+          {
+            path: "ddd",
+            element: "123",
+          },
+        ],
       },
       {
         path: "/ccc",

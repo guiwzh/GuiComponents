@@ -15,6 +15,7 @@ import LazyLoad from "./components/LazyLoad";
 import img2 from "./img2.png";
 
 import Guang from "./Guang";
+import Signature from "./components/Signature";
 library.add(fas);
 
 interface ItemProps {
@@ -112,14 +113,14 @@ function App() {
         </Upload>
       </header>
       {/* 列表项高度固定 - 虚拟列表实现 */}
-      <VirtualList
+      {/* <VirtualList
         containerHeight={300}
         itemCount={list.length}
         itemHeight={50}
       >
         <Item />
-      </VirtualList>
-
+      </VirtualList> */}
+      <Signature></Signature>
       {/* <p>xxxxxx</p>
       <p>xxxxxx</p>
       <p>xxxxxx</p>

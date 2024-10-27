@@ -98,16 +98,16 @@ function App() {
           style={{ width: "200px" }}
         ></AutoComplete>
         <Upload
-          action={
-            "https://run.mocky.io/v3/9b60839d-d5ee-40b2-9149-bc006b7d5f15"
-          }
+          action={"https://run.mocky.io/v3/9b60839d-d5ee-40b2-9149"}
           onprogress={() => console.log(1)}
           onSuccess={() => console.log(2)}
-          onError={(err) => console.log(err)}
+          onError={(err) => console.log(3)}
           multiple
           maxsize={5}
-          maxnum={1}
+          maxnum={10}
           styleUploadList={{ width: "300px" }}
+          failednums={2}
+          limit={2}
         >
           <Icon theme="primary" icon="upload" size="4x"></Icon>
         </Upload>
